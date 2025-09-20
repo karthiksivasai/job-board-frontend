@@ -20,9 +20,15 @@ export default function SearchFilters({
   const [salaryRange, setSalaryRange] = useState<[number, number]>([50, 65]);
 
   const handleSalaryChange = (value: number | number[]) => {
-    const newRange = Array.isArray(value) ? value as [number, number] : [value, value];
-    setSalaryRange(newRange);
-    onSalaryChange(newRange);
+    if (Array.isArray(value)) {
+      const newRange: [number, number] = [value[0], value[1]];
+      setSalaryRange(newRange);
+      onSalaryChange(newRange);
+    } else {
+      const newRange: [number, number] = [value, value];
+      setSalaryRange(newRange);
+      onSalaryChange(newRange);
+    }
   };
 
   return (

@@ -210,7 +210,7 @@ export default function HomePage() {
   const formatJobForCard = (job: Job) => {
     // Split description and ensure we have exactly 2 bullet points
     const descriptionParts = job.description.split('. ').filter(Boolean);
-    let description = descriptionParts.slice(0, 2);
+    const description = descriptionParts.slice(0, 2);
     
     // If we have less than 2 parts, pad with empty strings
     while (description.length < 2) {
