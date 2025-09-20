@@ -1,103 +1,293 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { Container, Grid, Title, Stack, LoadingOverlay, Box, Text } from '@mantine/core';
+import { useState, useEffect, useCallback } from 'react';
+import Navbar from '@/components/Navbar';
+import SearchFilters from '@/components/SearchFilters';
+import JobCard from '@/components/JobCard';
+import { apiService, Job, JobQuery } from '@/services/api';
+
+export default function HomePage() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedJobType, setSelectedJobType] = useState<string | null>(null);
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([50, 80]);
+
+  const fetchJobs = useCallback(async (query: JobQuery = {}) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Use mock data for now
+      const mockJobs: Job[] = [
+        {
+          id: '1',
+          title: 'Full Stack Developer',
+          company: 'Amazon',
+          location: 'mumbai',
+          salaryMin: 10,
+          salaryMax: 15,
+          jobType: 'full-time',
+          experience: '1-3',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized experiences.',
+          logo: '/amazon.png',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          title: 'Node Js Developer',
+          company: 'Tesla',
+          location: 'bangalore',
+          salaryMin: 10,
+          salaryMax: 15,
+          jobType: 'full-time',
+          experience: '1-3',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized experiences.',
+          logo: 'T',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          title: 'UX/UI Designer',
+          company: 'Swiggy',
+          location: 'delhi',
+          salaryMin: 10,
+          salaryMax: 15,
+          jobType: 'full-time',
+          experience: '1-3',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized experiences.',
+          logo: 'S',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          title: 'React Developer',
+          company: 'Google',
+          location: 'hyderabad',
+          salaryMin: 8,
+          salaryMax: 12,
+          jobType: 'full-time',
+          experience: '2-4',
+          description: 'Build modern web applications using React and TypeScript. Work with a talented team on cutting-edge projects.',
+          logo: 'G',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          title: 'Python Developer',
+          company: 'Netflix',
+          location: 'pune',
+          salaryMin: 12,
+          salaryMax: 18,
+          jobType: 'full-time',
+          experience: '3-5',
+          description: 'Develop scalable backend services and data processing pipelines for our streaming platform.',
+          logo: 'N',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '6',
+          title: 'Frontend Developer',
+          company: 'Microsoft',
+          location: 'chennai',
+          salaryMin: 9,
+          salaryMax: 14,
+          jobType: 'full-time',
+          experience: '2-4',
+          description: 'Join Microsoft as a Frontend Developer and work on cutting-edge web technologies. Build user interfaces for our cloud services.',
+          logo: 'M',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '7',
+          title: 'DevOps Engineer',
+          company: 'Uber',
+          location: 'kolkata',
+          salaryMin: 15,
+          salaryMax: 22,
+          jobType: 'full-time',
+          experience: '3-5',
+          description: 'Join our DevOps team to manage infrastructure and deployment pipelines. Work with cutting-edge cloud technologies.',
+          logo: 'U',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '8',
+          title: 'Mobile App Developer',
+          company: 'Flipkart',
+          location: 'mumbai',
+          salaryMin: 3,
+          salaryMax: 5,
+          jobType: 'internship',
+          experience: '0-1',
+          description: 'Internship opportunity for Mobile App Developer. Learn and work on our e-commerce mobile applications.',
+          logo: 'F',
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+
+      // Apply filters to mock data
+      let filteredJobs = mockJobs;
+
+      if (query.search) {
+        const searchLower = query.search.toLowerCase();
+        filteredJobs = filteredJobs.filter(job =>
+          job.title.toLowerCase().includes(searchLower) ||
+          job.company.toLowerCase().includes(searchLower) ||
+          job.description.toLowerCase().includes(searchLower)
+        );
+      }
+
+      if (query.location) {
+        filteredJobs = filteredJobs.filter(job => job.location === query.location);
+      }
+
+      if (query.jobType) {
+        filteredJobs = filteredJobs.filter(job => job.jobType === query.jobType);
+      }
+
+      if (query.salaryMin !== undefined) {
+        filteredJobs = filteredJobs.filter(job => job.salaryMax >= (query.salaryMin || 0));
+      }
+
+      if (query.salaryMax !== undefined) {
+        filteredJobs = filteredJobs.filter(job => job.salaryMin <= (query.salaryMax || 0));
+      }
+
+      setJobs(filteredJobs);
+    } catch (error) {
+      console.error('Failed to fetch jobs:', error);
+      setError('Failed to load jobs. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Load jobs on component mount
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
+
+  // Filter jobs when search criteria change
+  useEffect(() => {
+    const query: JobQuery = {};
+    
+    if (searchTerm) query.search = searchTerm;
+    if (selectedLocation) query.location = selectedLocation;
+    if (selectedJobType) query.jobType = selectedJobType;
+    if (salaryRange[0] !== 50 || salaryRange[1] !== 80) {
+      query.salaryMin = salaryRange[0];
+      query.salaryMax = salaryRange[1];
+    }
+
+    fetchJobs(query);
+  }, [searchTerm, selectedLocation, selectedJobType, salaryRange, fetchJobs]);
+
+  const handleApply = (jobId: string) => {
+    console.log('Applying to job:', jobId);
+    // In production, this would redirect to application page or show modal
+  };
+
+  const formatJobForCard = (job: Job) => ({
+    id: job.id,
+    title: job.title,
+    company: job.company,
+    logo: job.logo || job.company.charAt(0).toUpperCase(),
+    logoType: job.id === '1' ? 'image' as const : 'text' as const,
+    experience: `${job.experience} yr Exp`,
+    workType: 'Onsite', // This could be added to the Job model
+    salary: `${job.salaryMax}LPA`,
+    description: job.description.split('. ').filter(Boolean).slice(0, 2),
+    postedTime: '24h Ago', // This could be calculated from createdAt
+  });
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Stack gap={0}>
+      <Navbar />
+      <SearchFilters
+        onSearchChange={setSearchTerm}
+        onLocationChange={setSelectedLocation}
+        onJobTypeChange={setSelectedJobType}
+        onSalaryChange={setSalaryRange}
+      />
+      <Box
+        style={{
+          width: '100%',
+          height: '1px',
+          backgroundColor: '#e5e7eb',
+          margin: '0',
+        }}
+      />
+      <Box
+        style={{
+          width: '100%',
+          backgroundColor: '#f8fafc',
+          minHeight: '60vh',
+        }}
+      >
+        <Container size="xl" py="xl" pos="relative">
+        <LoadingOverlay visible={loading} />
+        
+        {error && (
+          <Box
+            style={{
+              backgroundColor: '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: '12px',
+              padding: '16px',
+              marginBottom: '24px',
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Text c="#dc2626" size="sm" fw={500}>
+              {error}
+            </Text>
+          </Box>
+        )}
+        
+        <Grid gutter="xl">
+          {jobs?.map((job) => (
+            <Grid.Col key={job.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+              <JobCard {...formatJobForCard(job)} onApply={handleApply} />
+            </Grid.Col>
+          ))}
+        </Grid>
+        {!loading && (!jobs || jobs.length === 0) && (
+          <Box
+            style={{
+              textAlign: 'center',
+              padding: '80px 20px',
+              backgroundColor: '#FFFFFF',
+            }}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+            <Text c="#6b7280" size="xl" fw={500} mb="sm">
+              No jobs found matching your criteria
+            </Text>
+            <Text c="#9ca3af" size="sm">
+              Try adjusting your search filters or check back later
+            </Text>
+          </Box>
+            )}
+          </Container>
+        </Box>
+      </Stack>
+    );
+  }
