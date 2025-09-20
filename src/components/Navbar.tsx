@@ -3,8 +3,12 @@
 import { Container, Group, Button, Text, Box } from '@mantine/core';
 import { IconSearch, IconUser, IconBriefcase } from '@tabler/icons-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import CreateJobModal from './CreateJobModal';
 
 export default function Navbar() {
+  const [modalOpened, setModalOpened] = useState(false);
+
   return (
     <Box
       style={{
@@ -271,56 +275,61 @@ export default function Navbar() {
         </Group>
 
         {/* Create Jobs Button */}
-        <Link href="/create-job" style={{ textDecoration: 'none' }}>
-          <Box
-            style={{
-              width: '140px',
-              height: '38px',
-              background: 'linear-gradient(180deg, #A128FF 0%, #6100AD 113.79%)',
-              borderRadius: '30px',
-              paddingTop: '8px',
-              paddingRight: '24px',
-              paddingBottom: '8px',
-              paddingLeft: '24px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '10px',
-              opacity: 1,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #8B1FFF 0%, #4A0080 113.79%)';
-              e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #A128FF 0%, #6100AD 113.79%)';
-              e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-              e.currentTarget.style.transform = 'translateY(0)';
+        <Box
+          style={{
+            width: '140px',
+            height: '38px',
+            background: 'linear-gradient(180deg, #A128FF 0%, #6100AD 113.79%)',
+            borderRadius: '30px',
+            paddingTop: '8px',
+            paddingRight: '24px',
+            paddingBottom: '8px',
+            paddingLeft: '24px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '10px',
+            opacity: 1,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          }}
+          onClick={() => setModalOpened(true)}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(180deg, #8B1FFF 0%, #4A0080 113.79%)';
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(180deg, #A128FF 0%, #6100AD 113.79%)';
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.transform = 'translateY(0)';
+          }}
+        >
+          <Text 
+            size="sm" 
+            fw={600}
+            c="#FFFFFF" 
+            style={{ 
+              fontSize: '16px',
+              lineHeight: '1.35em',
+              fontFamily: 'Satoshi Variable, sans-serif',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
-            <Text 
-              size="sm" 
-              fw={600}
-              c="#FFFFFF" 
-              style={{ 
-                fontSize: '16px',
-                lineHeight: '1.35em',
-                fontFamily: 'Satoshi Variable, sans-serif',
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              Create Jobs
-            </Text>
-          </Box>
-        </Link>
+            Create Jobs
+          </Text>
+        </Box>
       </Box>
+      
+      {/* Create Job Modal */}
+      <CreateJobModal 
+        opened={modalOpened} 
+        onClose={() => setModalOpened(false)} 
+      />
     </Box>
   );
 }
