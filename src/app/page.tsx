@@ -47,8 +47,8 @@ export default function HomePage() {
           salaryMax: 15,
           jobType: 'full-time',
           experience: '1-3',
-          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized experiences.',
-          logo: 'T',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/tesla1.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -62,8 +62,8 @@ export default function HomePage() {
           salaryMax: 15,
           jobType: 'full-time',
           experience: '1-3',
-          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized experiences.',
-          logo: 'S',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/swiggy.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -77,8 +77,8 @@ export default function HomePage() {
           salaryMax: 12,
           jobType: 'full-time',
           experience: '2-4',
-          description: 'Build modern web applications using React and TypeScript. Work with a talented team on cutting-edge projects.',
-          logo: 'G',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/amazon.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -92,8 +92,8 @@ export default function HomePage() {
           salaryMax: 18,
           jobType: 'full-time',
           experience: '3-5',
-          description: 'Develop scalable backend services and data processing pipelines for our streaming platform.',
-          logo: 'N',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/tesla1.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -107,8 +107,8 @@ export default function HomePage() {
           salaryMax: 14,
           jobType: 'full-time',
           experience: '2-4',
-          description: 'Join Microsoft as a Frontend Developer and work on cutting-edge web technologies. Build user interfaces for our cloud services.',
-          logo: 'M',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/swiggy.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -122,8 +122,8 @@ export default function HomePage() {
           salaryMax: 22,
           jobType: 'full-time',
           experience: '3-5',
-          description: 'Join our DevOps team to manage infrastructure and deployment pipelines. Work with cutting-edge cloud technologies.',
-          logo: 'U',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/amazon.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -137,8 +137,8 @@ export default function HomePage() {
           salaryMax: 5,
           jobType: 'internship',
           experience: '0-1',
-          description: 'Internship opportunity for Mobile App Developer. Learn and work on our e-commerce mobile applications.',
-          logo: 'F',
+          description: 'A user-friendly interface lets you browse stunning photos and videos. Filter destinations based on interests and travel style, and create personalized',
+          logo: '/tesla1.png',
           deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -207,18 +207,34 @@ export default function HomePage() {
     // In production, this would redirect to application page or show modal
   };
 
-  const formatJobForCard = (job: Job) => ({
-    id: job.id,
-    title: job.title,
-    company: job.company,
-    logo: job.logo || job.company.charAt(0).toUpperCase(),
-    logoType: job.id === '1' ? 'image' as const : 'text' as const,
-    experience: `${job.experience} yr Exp`,
-    workType: 'Onsite', // This could be added to the Job model
-    salary: `${job.salaryMax}LPA`,
-    description: job.description.split('. ').filter(Boolean).slice(0, 2),
-    postedTime: '24h Ago', // This could be calculated from createdAt
-  });
+  const formatJobForCard = (job: Job) => {
+    // Split description and ensure we have exactly 2 bullet points
+    const descriptionParts = job.description.split('. ').filter(Boolean);
+    let description = descriptionParts.slice(0, 2);
+    
+    // If we have less than 2 parts, pad with empty strings
+    while (description.length < 2) {
+      description.push('');
+    }
+    
+    // If we have more than 2 parts, join the extra parts to the second one
+    if (descriptionParts.length > 2) {
+      description[1] = descriptionParts.slice(1).join('. ');
+    }
+    
+    return {
+      id: job.id,
+      title: job.title,
+      company: job.company,
+      logo: job.logo || job.company.charAt(0).toUpperCase(),
+      logoType: (job.id === '1' || job.id === '2' || job.id === '3' || job.id === '4' || job.id === '5' || job.id === '6' || job.id === '7' || job.id === '8') ? 'image' as const : 'text' as const,
+      experience: `${job.experience} yr Exp`,
+      workType: 'Onsite', // This could be added to the Job model
+      salary: `${job.salaryMax}LPA`,
+      description: description,
+      postedTime: '24h Ago', // This could be calculated from createdAt
+    };
+  };
 
   return (
     <Stack gap={0}>

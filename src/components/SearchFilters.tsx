@@ -192,7 +192,7 @@ export default function SearchFilters({
               <Text size="sm" fw={500} c="#374151" style={{ fontSize: '14px' }}>
                 Salary Per Month
               </Text>
-              <Text size="sm" fw={500} c="#8b5cf6" style={{ fontSize: '14px' }}>
+              <Text size="sm" fw={500} c="#222222" style={{ fontSize: '14px' }}>
                 ₹{salaryRange[0]}k - ₹{salaryRange[1]}k
               </Text>
             </Group>

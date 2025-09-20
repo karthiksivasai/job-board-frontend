@@ -78,7 +78,7 @@ export default function JobCard({
           overflow: 'hidden',
         }}
       >
-        {logoType === 'image' ? (
+        {logoType === 'image' && logo.startsWith('/') ? (
           <Image
             src={logo}
             alt={`${company} logo`}
@@ -86,7 +86,7 @@ export default function JobCard({
             height={65.89}
             style={{
               objectFit: 'cover',
-              borderRadius: '8px',
+              borderRadius: '50%',
             }}
           />
         ) : (
@@ -226,22 +226,51 @@ export default function JobCard({
           top: '202px',
           left: '9px',
           width: '300px',
-          height: '76px',
+          height: '100px',
+          overflow: 'hidden',
         }}
       >
-        <Text
-          size="sm"
-          fw={500}
-          c="#555555"
-          style={{
-            fontSize: '14px',
-            lineHeight: '1.35',
-            fontFamily: 'Satoshi Variable, sans-serif',
-            textAlign: 'left',
-          }}
-        >
-          {description.join(' ')}
-        </Text>
+        {description.filter(item => item.trim()).map((item, index) => (
+          <Box
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              marginBottom: '6px',
+            }}
+          >
+            <Text
+              size="sm"
+              fw={500}
+              c="#555555"
+              style={{
+                fontSize: '14px',
+                lineHeight: '1.3',
+                fontFamily: 'Satoshi Variable, sans-serif',
+                marginRight: '6px',
+                marginTop: '2px',
+                flexShrink: 0,
+              }}
+            >
+              •
+            </Text>
+            <Text
+              size="sm"
+              fw={500}
+              c="#555555"
+              style={{
+                fontSize: '14px',
+                lineHeight: '1.3',
+                fontFamily: 'Satoshi Variable, sans-serif',
+                textAlign: 'left',
+                wordWrap: 'break-word',
+                flex: 1,
+              }}
+            >
+              {item}
+            </Text>
+          </Box>
+        ))}
       </Box>
 
       {/* Apply Button */}
@@ -250,7 +279,7 @@ export default function JobCard({
         size="lg"
         style={{
           position: 'absolute',
-          bottom: '16px',
+          bottom: '8px',
           left: '16px',
           width: '284px',
           height: '46px',
