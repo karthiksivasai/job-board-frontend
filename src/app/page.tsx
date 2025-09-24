@@ -1,11 +1,11 @@
 'use client';
 
-import { Container, Grid, Title, Stack, LoadingOverlay, Box, Text } from '@mantine/core';
+import { Container, Grid, Stack, LoadingOverlay, Box, Text } from '@mantine/core';
 import { useState, useEffect, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import SearchFilters from '@/components/SearchFilters';
 import JobCard from '@/components/JobCard';
-import { apiService, Job, JobQuery } from '@/services/api';
+import { Job, JobQuery } from '@/services/api';
 
 export default function HomePage() {
   const [jobs, setJobs] = useState<Job[]>([]);

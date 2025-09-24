@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Text, Group, Badge, Button, Box, Stack } from '@mantine/core';
+import { Card, Text, Button, Box } from '@mantine/core';
 import { IconUser, IconBuilding, IconCurrencyRupee } from '@tabler/icons-react';
 import Image from 'next/image';
 

@@ -1,8 +1,9 @@
 'use client';
 
-import { Container, Group, Button, Text, Box } from '@mantine/core';
-import { IconSearch, IconUser, IconBriefcase } from '@tabler/icons-react';
+import { Group, Text, Box } from '@mantine/core';
+// import { IconSearch, IconUser, IconBriefcase } from '@tabler/icons-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import CreateJobModal from './CreateJobModal';
 
@@ -46,12 +47,12 @@ export default function Navbar() {
             justifyContent: 'center',
           }}
         >
-          <img
+          <Image
             src="/images/logo.svg"
             alt="Logo"
+            width={44}
+            height={45}
             style={{
-              width: '44px',
-              height: '45px',
               objectFit: 'contain',
             }}
           />

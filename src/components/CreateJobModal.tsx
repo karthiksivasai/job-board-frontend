@@ -1,7 +1,7 @@
 'use client';
 
 import { Modal, TextInput, Select, NumberInput, Textarea, Button, Group, Stack, Text, Box } from '@mantine/core';
-import { IconCalendar, IconChevronDown, IconChevronDown as IconArrowDown, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronDown, IconChevronDown as IconArrowDown, IconChevronRight } from '@tabler/icons-react';
 import { useState } from 'react';
 
 interface CreateJobModalProps {

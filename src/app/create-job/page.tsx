@@ -1,13 +1,13 @@
 'use client';
 
-import { Container, Paper, Title, TextInput, Select, Textarea, NumberInput, Button, Stack, Group, Text } from '@mantine/core';
+import { Container, Paper, Title, TextInput, Select, Textarea, NumberInput, Button, Stack, Group } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import Navbar from '@/components/Navbar';
 import { useState } from 'react';
-import { apiService, CreateJobData } from '@/services/api';
+// import { apiService, CreateJobData } from '@/services/api';
 
 interface JobFormData {
   title: string;
@@ -41,7 +41,7 @@ export default function CreateJobPage() {
       company: (value) => (value.length < 2 ? 'Company name must be at least 2 characters' : null),
       location: (value) => (!value ? 'Please select a location' : null),
       salaryMin: (value) => (value < 0 ? 'Minimum salary must be positive' : null),
-      salaryMax: (value, values) => (value < values.salaryMin ? 'Maximum salary must be greater than minimum' : null),
+      salaryMax: (value, formValues) => (value < formValues.salaryMin ? 'Maximum salary must be greater than minimum' : null),
       description: (value) => (value.length < 10 ? 'Description must be at least 10 characters' : null),
       jobType: (value) => (!value ? 'Please select a job type' : null),
       experience: (value) => (!value ? 'Please select experience level' : null),
@@ -49,11 +49,12 @@ export default function CreateJobPage() {
     },
   });
 
-  const handleSubmit = async (values: JobFormData) => {
+  const handleSubmit = async (formValues: JobFormData) => {
     setIsSubmitting(true);
     
     try {
       // Simulate API call with mock data
+      console.log('Submitting job data:', formValues);
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       notifications.show({

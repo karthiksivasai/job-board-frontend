@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Group, TextInput, Select, Slider, Text, Box, Divider, RangeSlider } from '@mantine/core';
+import { Container, Group, TextInput, Select, Text, Box, RangeSlider } from '@mantine/core';
 import { IconSearch, IconMapPin, IconUser, IconChevronDown } from '@tabler/icons-react';
 import { useState } from 'react';
 
